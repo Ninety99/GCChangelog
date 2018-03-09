@@ -16,6 +16,10 @@ commands:
     usage: /<command>
     description: Adds a new change to the changelog book. 
     permission: changelog.admin
+    gcchangelog add page:
+    usage: /<command>
+    description: Adds a new change to the changelog book page. 
+    permission: changelog.admin
   gcchangelog undo:
     usage: /<command>
     description: Removed a change.

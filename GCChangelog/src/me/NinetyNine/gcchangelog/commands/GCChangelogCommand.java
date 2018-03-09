@@ -39,6 +39,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				bookmeta1.setAuthor("§4aXed");
 
 				book.setItemMeta(bookmeta);
+				player.getInventory().addItem(book);
 				
 				if (player.getInventory().contains(book) && book.hasItemMeta()) {
 					((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
