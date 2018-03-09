@@ -1,5 +1,10 @@
 name: GCChangelog
-version 1.0
+version: 1.0
+main: me.NinetyNine.gcchangelog.GCChangelog
 author: NinetyNine
 description: Shows changelog on GuildCraft.
 commands:
+  changelog:
+    usage: /<command>
+    description: Opens the book that shows the changes made.
+    permission: changelog.open
