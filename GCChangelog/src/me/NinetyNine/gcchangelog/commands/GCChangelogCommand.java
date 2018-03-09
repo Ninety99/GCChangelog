@@ -39,8 +39,11 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				bookmeta1.setAuthor("§4aXed");
 
 				book.setItemMeta(bookmeta);
-
-				((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
+				
+				if (player.getInventory().contains(book) && book.hasItemMeta()) {
+					((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
+					player.getInventory().remove(book);
+				}
 			} else {
 				player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
 				return false;
