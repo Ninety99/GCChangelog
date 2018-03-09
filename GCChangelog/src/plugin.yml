@@ -18,5 +18,5 @@ commands:
     permission: changelog.admin
   gcchangelog undo:
     usage: /<command>
-    description: Removed a change. The newest change is always 1 then second change 2 etc etc etc.
+    description: Removed a change.
     permission: changelog.admin
