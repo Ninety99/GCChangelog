@@ -8,3 +8,7 @@ commands:
     usage: /<command>
     description: Opens the book that shows the changes made.
     permission: changelog.open
+  gcchangelog:
+    usage: /<command>
+    description: Adds a new change to the changelog book. 
+    permission: changelog.admin
