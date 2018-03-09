@@ -12,39 +12,30 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.plugin.Plugin;
-
-import me.NinetyNine.gcchangelog.GCChangelog;
 
 public class GCChangelogCommand implements Listener, CommandExecutor {
 
 	private HashSet<String> msg = new HashSet<String>();
+	// private List<String> mesg;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-		Player player = (Player) sender;
-		ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
-		BookMeta bookmeta = (BookMeta) book.getItemMeta();
-
 		String message = "";
-		for (int i = 1; i < args.length; i++) {
-			message += args[i] + " ";
-		}
-		message = message.trim();
+
+		Player player = (Player) sender;
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta bookmeta = (BookMeta) book.getItemMeta();
+		bookmeta.setTitle("§6Guild§7Craft §0Changelog");
+		bookmeta.setAuthor("§caXed");
+		bookmeta.addPage("§2✔​ §fHey!");
+		book.setItemMeta(bookmeta);
+		// bookmeta.addPage(message);
 
 		if (cmd.getName().equalsIgnoreCase("changelog")) {
 			if (player.hasPermission("changelog.open")) {
-				BookMeta bookmeta1 = (BookMeta) book.getItemMeta();
-				bookmeta1.setTitle("§dGuild§7Craft §fChangelog");
-				bookmeta1.setAuthor("§4aXed");
-
-				book.setItemMeta(bookmeta);
 				player.getInventory().addItem(book);
-				
-				if (player.getInventory().contains(book) && book.hasItemMeta()) {
-					((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
-					player.getInventory().remove(book);
-				}
+
+				((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
 			} else {
 				player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
 				return false;
@@ -52,67 +43,93 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		}
 
 		if (cmd.getName().equalsIgnoreCase("gcchangelog")) {
-			if (args.length == 0) {
-				if (player.hasPermission("changelog.admin")) {
-					player.sendMessage(
-							"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number>");
+			if (player.getItemInHand().getType().equals(Material.WRITTEN_BOOK)
+					&& player.getItemInHand().hasItemMeta()) {
+				if (args.length == 0) {
+					if (player.hasPermission("changelog.admin")) {
+						player.sendMessage(
+								"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number> or /gcchangelog undo");
+						return true;
+					} else {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
+						return false;
+					}
+				}
+
+				if (args[0].equalsIgnoreCase("add")) {
+					if (args.length == 1) {
+						player.sendMessage(
+								"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number>");
+						return true;
+					}
+				}
+
+				for (int i = 1; i < args.length; i++) {
+					message += args[i] + " ";
+				}
+				message = message.trim();
+
+				if (args[0].equalsIgnoreCase("undo")) {
+					player.sendMessage("§8[§6Guild§7Craft§8] §aSuccesfully undo!");
+					msg.remove(message);
 					return true;
-				} else {
-					player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
-					return false;
 				}
-			}
 
-			if (args[0].equalsIgnoreCase("add")) {
-				if (args.length == 1) {
-					player.sendMessage(
-							"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number>");
-					return true;
+				if (args[1].equalsIgnoreCase("fixed")) {
+					if (args.length == 1) {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
+					}
+					bookmeta.setTitle("§6Guild§7Craft §0Changelog");
+					bookmeta.setAuthor("§caXed");
+					bookmeta.addPage("§2✔​ §f" + message);
+					book.setItemMeta(bookmeta);
+					player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+
+					msg.add(message);
 				}
-			}
-			
-			if (args[0].equalsIgnoreCase("undo")) {
-				msg.remove(message);
-				return true;
-			}
 
-			if (args[1].equalsIgnoreCase("fixed")) {
-				bookmeta.addPage("§2✔​ §f" + message);
-				book.setItemMeta(bookmeta);
-				player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-				
-				msg.add(message);
-			}
+				else if (args[1].equalsIgnoreCase("removed")) {
+					if (args.length == 1) {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add removed <message>");
+					} else {
+						bookmeta.addPage("§c╳ §f");
+						book.setItemMeta(bookmeta);
+						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
-			else if (args[1].equalsIgnoreCase("removed")) {
-				bookmeta.addPage("§c╳ §f" + message);
-				book.setItemMeta(bookmeta);
-				player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-				
-				msg.add(message);
-			}
-
-			else if (args[1].equalsIgnoreCase("changed")) {
-				bookmeta.addPage("§f▶ " + message);
-				book.setItemMeta(bookmeta);
-				player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-				
-				msg.add(message);
-			}
-
-			else if (args[1].equalsIgnoreCase("page")) {
-				if (bookmeta.getPageCount() < ((Plugin) new GCChangelog()).getConfig().getInt("maxPage")) {
-					bookmeta.addPage();
-				} else {
-					player.sendMessage("§8[§6Guild§7Craft§8] §4Reached the maximum level of pages!");
-					return false;
+						msg.add(message);
+					}
 				}
-				
-				msg.add(message);
-			}
 
-			else {
-				player.sendMessage("§[§dGuild§7Craft§8] §cInvalid operation.");
+				else if (args[1].equalsIgnoreCase("changed")) {
+					if (args.length == 1) {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add changed <message>");
+					} else {
+						bookmeta.addPage("§f▶ " + message);
+						book.setItemMeta(bookmeta);
+						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+
+						msg.add(message);
+					}
+				}
+
+				else if (args[1].equalsIgnoreCase("page")) {
+					if (bookmeta.getPageCount() < 6) {
+						bookmeta.addPage("§8[§6Guild§7Craft§8] §2New page!");
+
+						player.sendMessage("§8[§6Guild§7Craft§8] §7+1 page");
+					} else {
+						player.sendMessage("§8[§6Guild§7Craft§8] §4Reached the maximum level of pages!");
+						return false;
+					}
+
+					msg.add(message);
+				}
+
+				else {
+					player.sendMessage("§8[§6Guild§7Craft§8] §cInvalid operation.");
+				}
+			} else {
+				player.sendMessage("§8[§6Guild§7Craft§8] §cYou must hold the changelog!");
 			}
 		}
 		return true;
