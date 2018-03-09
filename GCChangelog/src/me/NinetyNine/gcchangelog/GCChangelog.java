@@ -9,7 +9,6 @@ public class GCChangelog extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		getServer().getPluginManager().registerEvents(new GCChangelogHandler(), this);
 		getCommand("changelog").setExecutor(new GCChangelogCommand());
 		getCommand("gcchangelog").setExecutor(new GCChangelogCommand());
 		
