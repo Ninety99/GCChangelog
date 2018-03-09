@@ -12,3 +12,11 @@ commands:
     usage: /<command>
     description: Adds a new change to the changelog book. 
     permission: changelog.admin
+  gcchangelog add <type> <message>:
+    usage: /<command>
+    description: Adds a new change to the changelog book. 
+    permission: changelog.admin
+  gcchangelog undo:
+    usage: /<command>
+    description: Removed a change. The newest change is always 1 then second change 2 etc etc etc.
+    permission: changelog.admin
