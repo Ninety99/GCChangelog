@@ -20,6 +20,7 @@ import me.NinetyNine.gcchangelog.GCChangelog;
 public class GCChangelogCommand implements Listener, CommandExecutor {
 
 	private HashSet<String> msg = new HashSet<String>();
+	private String nm;
 	private GCChangelog plugin;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -36,7 +37,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		bookmeta.addPage(message);
 		bookmeta.setAuthor("§caXed");
 		book.setItemMeta(bookmeta);
-		
+
 		Date now = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("MM dd yyyy");
 
@@ -70,6 +71,17 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 					}
 				}
 
+				if (args[0].equalsIgnoreCase("page")) {
+					if (args.length == 1) {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog page <number>");
+						return true;
+					}
+				}
+
+				else if (args[1].equalsIgnoreCase(nm)) {
+
+				}
+
 				if (args[0].equalsIgnoreCase("add")) {
 					if (args.length == 1) {
 						player.sendMessage(
@@ -94,14 +106,14 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				if (args[1].equalsIgnoreCase("fixed")) {
 					if (args.length == 1) {
 						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
-					}
-					
-					bookmeta.setPage(1, "§0" + format.format(now) + "\n" + "§2✔​ §0​" + message);
-					book.setItemMeta(bookmeta);
-					player.setItemInHand(book);
-					player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+					} else {
+						bookmeta.setPage(1, "§0" + format.format(now) + "\n" + "§2✔​ §0​" + message);
+						book.setItemMeta(bookmeta);
+						player.setItemInHand(book);
+						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
-					msg.add(message);
+						msg.add(message);
+					}
 				}
 
 				else if (args[1].equalsIgnoreCase("removed")) {

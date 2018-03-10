@@ -47,7 +47,7 @@ public final class GCChangelogBook {
 		return book;
 	}
 
-	public static void open(Player p, ItemStack book, boolean addStats) {
+	public static void open(Player p, ItemStack book) {
 		EntityPlayer player = ((CraftPlayer) p).getHandle();
 		ItemStack hand = p.getItemInHand();
 
