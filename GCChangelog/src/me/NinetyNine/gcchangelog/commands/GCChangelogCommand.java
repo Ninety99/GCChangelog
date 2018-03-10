@@ -1,5 +1,7 @@
 package me.NinetyNine.gcchangelog.commands;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 
 import org.bukkit.Material;
@@ -18,31 +20,36 @@ import me.NinetyNine.gcchangelog.GCChangelog;
 public class GCChangelogCommand implements Listener, CommandExecutor {
 
 	private HashSet<String> msg = new HashSet<String>();
+	private GCChangelog plugin;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
 		String message = "";
 
-		for (int i = 1; i < args.length; i++) {
-			message += args[i] + " ";
-		}
-		message = message.trim();
-
-		String down = "\n";
+		// String down = "\n";
 
 		Player player = (Player) sender;
+
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bookmeta = (BookMeta) book.getItemMeta();
 		bookmeta.setTitle("§6Guild§7Craft §0Changelog");
+		bookmeta.addPage(message);
 		bookmeta.setAuthor("§caXed");
-		bookmeta.addPage("§2✔​ §f message" + msg);
 		book.setItemMeta(bookmeta);
+		
+		Date now = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("MM dd yyyy");
 
 		if (cmd.getName().equalsIgnoreCase("changelog")) {
 			if (player.hasPermission("changelog.open")) {
+				player.getInventory().setHeldItemSlot(0);
 				player.getInventory().setItem(0, book);
 
-				((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
+				if (player.getInventory().contains(book) && book.hasItemMeta()) {
+					((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
+					return true;
+				}
+
 			} else {
 				player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
 				return false;
@@ -72,15 +79,14 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				}
 
 				if (args[0].equalsIgnoreCase("undo")) {
-					player.sendMessage("§8[§6Guild§7Craft§8] §aSuccesfully undo!");
 					msg.remove(message);
+					player.sendMessage("§8[§6Guild§7Craft§8] §aSuccesfully undo!");
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length == 1) {
-						new GCChangelog().reloadConfig();
-
+						plugin.reloadConfig();
 						player.sendMessage("§8[§6Guild§7Craft§8] §6Reloaded!");
 					}
 				}
@@ -89,11 +95,10 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 					if (args.length == 1) {
 						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
 					}
-
-					bookmeta.setTitle("§6Guild§7Craft §0Changelog");
-					bookmeta.setAuthor("§caXed");
-					bookmeta.addPage(down + "§2✔​  §l§0" + message);
+					
+					bookmeta.setPage(1, "§0" + format.format(now) + "\n" + "§2✔​ §0​" + message);
 					book.setItemMeta(bookmeta);
+					player.setItemInHand(book);
 					player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
 					msg.add(message);
