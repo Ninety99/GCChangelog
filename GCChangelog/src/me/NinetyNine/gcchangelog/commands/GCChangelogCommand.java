@@ -129,7 +129,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				}
 
 				else if (args[1].equalsIgnoreCase("page")) {
-					if (bookmeta.getPageCount() < (new GCChangelog().getConfig().getInt("maxPages"))) {
+					if (bookmeta.getPageCount() < plugin.getConfig().getString("maxPages").length()) {
 						bookmeta.addPage("§8[§6Guild§7Craft§8] §2New page!");
 
 						player.sendMessage("§8[§6Guild§7Craft§8] §7+1 page");
