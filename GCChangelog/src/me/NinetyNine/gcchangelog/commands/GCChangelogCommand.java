@@ -29,7 +29,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 	public HashMap<Player, ItemStack[]> itemhash = new HashMap<>();
 
 	private GCChangelog plugin;
-
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
 		String message = "";
@@ -42,6 +42,8 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		SimpleDateFormat format = new SimpleDateFormat("dd MM yyyy");
 		Player player = (Player) sender;
 
+		
+		
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bookmeta = (BookMeta) book.getItemMeta();
 		bookmeta.setTitle("§6Guild§7Craft §0Changelog");
@@ -49,9 +51,13 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		bookmeta.setAuthor("§caXed");
 		book.setItemMeta(bookmeta);
 		
+		
 		ItemStack b = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bm = (BookMeta) b.getItemMeta();
+		bm.addPage(" ");
 		
+		String aa = bm.getPage(1);
+		aa += bookmeta.getPage(1);
 
 		ItemStack[] playerinv = player.getInventory().getContents();
 
@@ -60,6 +66,9 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 				if (!this.gccl.contains(player)) {
 					gccl.add(player);
 					itemhash.put(player, playerinv);
+					
+					bookmeta.setPage(1, aa);
+					book.setItemMeta(bookmeta);
 					player.setItemInHand(book);
 					player.sendMessage(
 							"§8[§6Guild§7Craft§8] §2You have recieved the changelog book! Type /changelog again to get your item(s) back.");
@@ -106,11 +115,12 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						}
 					}
 					
-					if (args[0].equalsIgnoreCase("set")) {
+					/*if (args[0].equalsIgnoreCase("set")) {
 						if (args.length == 1) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog set <text>");
 							return true;
 						}
+						
 						
 						String test = "";
 
@@ -124,6 +134,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						book.setItemMeta(bookmeta);
 						
 					}
+					*/
 
 					if (args[0].equalsIgnoreCase("undo")) {
 						msg.remove(message);
@@ -138,52 +149,52 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 							player.sendMessage("§8[§6Guild§7Craft§8] §6Reloaded!");
 						}
 					}
-					
+					/*
 					if (args[1].equalsIgnoreCase("all")) {
 						if (args.length == 1) {
 							// /first text is for fixed, 2nd for removed, 3rd for changed.
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <text>(fixed) <text>(removed) <text>(changed)");
 							return true;
 						}
+						
 						String test = "";
 
 						for (int itest = 2; itest < args.length; itest++) {
-							test += args[itest] + " ";
+							test = args[itest] + " ";
 						}
 						
-						/*String test1 = "";
+						
+						/*String test1a = "";
 
-						for (int itest1 = 3; itest1 < args.length; itest1++) {
-							test1 += args[itest1] + " ";
+						for (int itest1a = 3;;) {
+							test1a = args[3] + " ";
 						}
-						
-						String test2 = "";
+						*/
+						/*String test2 = "";
 
 						for (int itest2 = 4; itest2 < args.length; itest2++) {
 							test2 += args[itest2] + " ";
 						}
-						*/
+						
 						
 						bm.addPage(" ");
 						bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
-								+ ChatColor.BLACK + test + "\n");
-						bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
-								+ ChatColor.BLACK + test + "\n" + ChatColor.RED + "✘ " + ChatColor.BLACK + test + "\n");
-						bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
 								+ ChatColor.BLACK + test + "\n" + ChatColor.RED + "✘ " + ChatColor.BLACK + test + "\n" + ChatColor.GOLD + "▶ "
-								+ ChatColor.BLACK + test + "\n\n");
+								+ ChatColor.BLACK + test2 + "\n\n");
 						book.setItemMeta(bm);
 						player.setItemInHand(book);
-						
 					}
+				/*
+				*/
 
-					/*if (args[1].equalsIgnoreCase("fixed")) {
+					if (args[1].equalsIgnoreCase("fixed")) {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
 						} else {
-							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
-									+ ChatColor.BLACK + message + "\n");
-							book.setItemMeta(bookmeta);
+							bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
+									+ ChatColor.BLACK + message + "\n" + ChatColor.RED + "✘ " + ChatColor.BLACK + "\n" + ChatColor.GOLD + "▶ "
+									+ ChatColor.BLACK + "\n\n" + aa);
+							book.setItemMeta(bm);
 							player.setItemInHand(book);
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
@@ -197,11 +208,11 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add removed <message>");
 						} else {
-							bookmeta.addPage(ChatColor.BOLD + format.format(now) + "\n" + ChatColor.RED + "✘ "
-									+ ChatColor.BLACK + message + "\n");
-
+							bm.setPage(1 ,ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
+									+ ChatColor.BLACK + "\n" + ChatColor.RED + "✘ " + ChatColor.BLACK + message + "\n" + ChatColor.GOLD + "▶ "
+									+ ChatColor.BLACK + "\n\n" + aa);
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-							book.setItemMeta(bookmeta);
+							book.setItemMeta(bm);
 							player.setItemInHand(book);
 
 							msg.add(message);
@@ -213,9 +224,10 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add changed <message>");
 						} else {
-							bookmeta.addPage(ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GOLD + "▶ "
-									+ ChatColor.BLACK + message + "\n\n");
-							book.setItemMeta(bookmeta);
+							bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
+									+ ChatColor.BLACK + "\n" + ChatColor.RED + "✘ " + ChatColor.BLACK + "\n" + ChatColor.GOLD + "▶ "
+									+ ChatColor.BLACK + message + "\n\n" + aa);
+							book.setItemMeta(bm);
 							player.setItemInHand(book);
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
@@ -223,7 +235,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 							inb.add(message);
 						}
 					}
-					*/
+					
 
 					else if (args[1].equalsIgnoreCase("page")) {
 						if (bookmeta.getPageCount() < 6) {
