@@ -36,10 +36,16 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bookmeta = (BookMeta) book.getItemMeta();
+		BookMeta bm = (BookMeta) book.getItemMeta();
+		BookMeta bm1 = (BookMeta) book.getItemMeta();
+		BookMeta bm2= (BookMeta) book.getItemMeta();
 		bookmeta.setTitle("§6Guild§7Craft §0Changelog");
 		bookmeta.addPage(message);
 		bookmeta.setAuthor("§caXed");
 		book.setItemMeta(bookmeta);
+		book.setItemMeta(bm);
+		book.setItemMeta(bm1);
+		book.setItemMeta(bm2);
 
 		Date now = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("dd MM yyyy");
@@ -48,6 +54,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 			if (player.hasPermission("changelog.open")) {
 				player.getInventory().setHeldItemSlot(0);
 				player.getInventory().setItem(0, book);
+				book.setItemMeta(bookmeta);
 
 				if (player.getInventory().contains(book) && book.hasItemMeta()) {
 					((CraftPlayer) player).getHandle().openBook(CraftItemStack.asNMSCopy(book));
@@ -102,9 +109,9 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
 						} else {
-							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
+							bm.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
 									+ ChatColor.BLACK + message + "\n");
-							book.setItemMeta(bookmeta);
+							book.setItemMeta(bm);
 							player.setItemInHand(book);
 							player.updateInventory();
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
@@ -117,9 +124,9 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add removed <message>");
 						} else {
-							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.RED + "✘ "
+							bm1.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.RED + "✘ "
 									+ ChatColor.BLACK + message + "\n");
-							book.setItemMeta(bookmeta);
+							book.setItemMeta(bm1);
 							player.setItemInHand(book);
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
@@ -131,9 +138,9 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 						if (args.length == 2) {
 							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add changed <message>");
 						} else {
-							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GOLD + "▶ "
+							bm2.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GOLD + "▶ "
 									+ ChatColor.BLACK + message + "\n");
-							book.setItemMeta(bookmeta);
+							book.setItemMeta(bm2);
 							player.setItemInHand(book);
 							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
