@@ -63,105 +63,105 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		if (cmd.getName().equalsIgnoreCase("gcchangelog")) {
 			if (player.getItemInHand().getType().equals(Material.WRITTEN_BOOK)
 					&& player.getItemInHand().hasItemMeta()) {
-				if (args.length == 0) {
-					if (player.hasPermission("changelog.admin")) {
+				if (player.hasPermission("changelog.admin")) {
+					if (args.length == 0) {
 						player.sendMessage(
 								"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number> or /gcchangelog undo");
 						return true;
-					} else {
-						player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
-						return false;
 					}
-				}
 
-				if (args[0].equalsIgnoreCase("page")) {
-					if (args.length == 1) {
-						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog page <number>");
+					if (args[0].equalsIgnoreCase("page")) {
+						if (args.length == 1) {
+							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog page <number>");
+							return true;
+						}
+					}
+
+					if (args[0].equalsIgnoreCase("add")) {
+						if (args.length == 1) {
+							player.sendMessage(
+									"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number>");
+							return true;
+						}
+					}
+
+					if (args[0].equalsIgnoreCase("undo")) {
+						msg.remove(message);
+						player.sendMessage("§8[§6Guild§7Craft§8] §aSuccesfull undo!");
 						return true;
 					}
-				}
 
-				if (args[0].equalsIgnoreCase("add")) {
-					if (args.length == 1) {
-						player.sendMessage(
-								"§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add <type> <message> or /gcchangelog remove <number>");
-						return true;
+					if (args[0].equalsIgnoreCase("reload")) {
+						if (args.length == 1) {
+							plugin.reloadConfig();
+							player.sendMessage("§8[§6Guild§7Craft§8] §6Reloaded!");
+						}
 					}
-				}
 
-				if (args[0].equalsIgnoreCase("undo")) {
-					msg.remove(message);
-					player.sendMessage("§8[§6Guild§7Craft§8] §aSuccesfully undo!");
-					return true;
-				}
+					if (args[1].equalsIgnoreCase("fixed")) {
+						if (args.length == 2) {
+							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
+						} else {
+							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
+									+ ChatColor.BLACK + message + "\n");
+							book.setItemMeta(bookmeta);
+							player.setItemInHand(book);
+							player.updateInventory();
+							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
-				if (args[0].equalsIgnoreCase("reload")) {
-					if (args.length == 1) {
-						plugin.reloadConfig();
-						player.sendMessage("§8[§6Guild§7Craft§8] §6Reloaded!");
+							msg.add(message);
+						}
 					}
-				}
 
-				if (args[1].equalsIgnoreCase("fixed")) {
-					if (args.length == 2) {
-						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
-					} else {
-						bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔ "
-								+ ChatColor.BLACK + message + "\n");
-						book.setItemMeta(bookmeta);
-						player.setItemInHand(book);
-						player.updateInventory();
-						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+					else if (args[1].equalsIgnoreCase("removed")) {
+						if (args.length == 2) {
+							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add removed <message>");
+						} else {
+							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.RED + "✘ "
+									+ ChatColor.BLACK + message + "\n");
+							book.setItemMeta(bookmeta);
+							player.setItemInHand(book);
+							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+
+							msg.add(message);
+						}
+					}
+
+					else if (args[1].equalsIgnoreCase("changed")) {
+						if (args.length == 2) {
+							player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add changed <message>");
+						} else {
+							bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GOLD + "▶ "
+									+ ChatColor.BLACK + message + "\n");
+							book.setItemMeta(bookmeta);
+							player.setItemInHand(book);
+							player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
+
+							msg.add(message);
+						}
+					}
+
+					else if (args[1].equalsIgnoreCase("page")) {
+						if (bookmeta.getPageCount() < 6) {
+							bookmeta.addPage("§8[§6Guild§7Craft§8] §2New page!");
+							book.setItemMeta(bookmeta);
+							player.setItemInHand(book);
+
+							player.sendMessage("§8[§6Guild§7Craft§8] §7+1 page");
+						} else {
+							player.sendMessage("§8[§6Guild§7Craft§8] §4Reached the maximum level of pages!");
+							return false;
+						}
 
 						msg.add(message);
 					}
-				}
 
-				else if (args[1].equalsIgnoreCase("removed")) {
-					if (args.length == 2) {
-						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add removed <message>");
-					} else {
-						bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.RED + "✘ "
-								+ ChatColor.BLACK + message + "\n");
-						book.setItemMeta(bookmeta);
-						player.setItemInHand(book);
-						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-
-						msg.add(message);
+					else {
+						player.sendMessage("§8[§6Guild§7Craft§8] §cInvalid operation.");
 					}
-				}
-
-				else if (args[1].equalsIgnoreCase("changed")) {
-					if (args.length == 2) {
-						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add changed <message>");
-					} else {
-						bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GOLD + "▶ "
-								+ ChatColor.BLACK + message + "\n");
-						book.setItemMeta(bookmeta);
-						player.setItemInHand(book);
-						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
-
-						msg.add(message);
-					}
-				}
-
-				else if (args[1].equalsIgnoreCase("page")) {
-					if (bookmeta.getPageCount() < 6) {
-						bookmeta.addPage("§8[§6Guild§7Craft§8] §2New page!");
-						book.setItemMeta(bookmeta);
-						player.setItemInHand(book);
-
-						player.sendMessage("§8[§6Guild§7Craft§8] §7+1 page");
-					} else {
-						player.sendMessage("§8[§6Guild§7Craft§8] §4Reached the maximum level of pages!");
-						return false;
-					}
-
-					msg.add(message);
-				}
-
-				else {
-					player.sendMessage("§8[§6Guild§7Craft§8] §cInvalid operation.");
+				} else {
+					player.sendMessage("§8[§6Guild§7Craft§8] §cYou do not have permissions!");
+					return false;
 				}
 			} else {
 				player.sendMessage("§8[§6Guild§7Craft§8] §cYou must hold the changelog!");
