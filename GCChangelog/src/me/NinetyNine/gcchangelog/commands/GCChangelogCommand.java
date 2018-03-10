@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +21,7 @@ import me.NinetyNine.gcchangelog.GCChangelog;
 public class GCChangelogCommand implements Listener, CommandExecutor {
 
 	private HashSet<String> msg = new HashSet<String>();
-	private String nm;
+	//private String nm;
 	private GCChangelog plugin;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -39,7 +40,7 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 		book.setItemMeta(bookmeta);
 
 		Date now = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("MM dd yyyy");
+		SimpleDateFormat format = new SimpleDateFormat("dd MM yyyy");
 
 		if (cmd.getName().equalsIgnoreCase("changelog")) {
 			if (player.hasPermission("changelog.open")) {
@@ -78,9 +79,10 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 					}
 				}
 
-				else if (args[1].equalsIgnoreCase(nm)) {
+				/*else if (args[1].equalsIgnoreCase(nm)) {
 
 				}
+				*/
 
 				if (args[0].equalsIgnoreCase("add")) {
 					if (args.length == 1) {
@@ -107,9 +109,11 @@ public class GCChangelogCommand implements Listener, CommandExecutor {
 					if (args.length == 1) {
 						player.sendMessage("§8[§6Guild§7Craft§8] §cUsage: /gcchangelog add fixed <message>");
 					} else {
-						bookmeta.setPage(1, "§0" + format.format(now) + "\n" + "§2✔​ §0​" + message);
+						bookmeta.setPage(1, ChatColor.BOLD + format.format(now) + "\n" + ChatColor.GREEN + "✔​ "
+								+ ChatColor.BLACK + message + "\n");
 						book.setItemMeta(bookmeta);
 						player.setItemInHand(book);
+						player.updateInventory();
 						player.sendMessage("§8[§6Guild§7Craft§8] §2Added!");
 
 						msg.add(message);
